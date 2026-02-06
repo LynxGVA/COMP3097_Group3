@@ -127,8 +127,8 @@ struct LoginView: View {
                             .font(AppFont.playwriteRegular(14))
                             .opacity(0.8)
 
-                        Button {
-                            dismiss()
+                        NavigationLink {
+                            RegisterView()
                         } label: {
                             Text("Register")
                                 .font(AppFont.playwriteRegular(14))
@@ -140,11 +140,23 @@ struct LoginView: View {
 
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 40)
+                .padding(.top, 80)
                 .padding(.bottom, 40)
             }
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image("back_button")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 84, height: 84)
+                }
+            }
+        }
     }
 }
 
