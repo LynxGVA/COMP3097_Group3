@@ -11,6 +11,7 @@ struct Your_MarketApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .dynamicTypeSize(.medium)
         }
     }
 }

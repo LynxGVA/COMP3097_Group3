@@ -7,7 +7,6 @@
 import SwiftUI
 
 struct MedicationProductsView: View {
-    @Environment(\.presentationMode) private var presentationMode
     @State private var goToCart = false
 
     private let products: [Product] = [
@@ -18,48 +17,50 @@ struct MedicationProductsView: View {
 
     var body: some View {
         ZStack {
-            Image("background")
+            Image("Background")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            GeometryReader { geo in
-                Image("background_medicine")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: geo.size.width * 0.95)
-                    .position(x: geo.size.width * 0.75, y: geo.size.height * 0.52)
-            }
-            .ignoresSafeArea()
-
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 14) {
+            VStack(spacing: 16) {
+                VStack(spacing: 14) {
                     ForEach(products) { product in
                         ProductRow(product: product, onCartTap: { goToCart = true })
                     }
                 }
-                .padding(.horizontal, 18)
-                .padding(.top, 18)
-                .padding(.bottom, 40)
+                .padding()
+                .padding(.top, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white.opacity(0.85))
+                )
             }
+            .padding(.horizontal, 20)
 
-            NavigationLink("", destination: CartView(), isActive: $goToCart)
+            NavigationLink(destination: CartView(), isActive: $goToCart) { EmptyView() }
                 .hidden()
         }
-        .navigationBarBackButtonHidden(true)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            TopBar(
-                onBack: { presentationMode.wrappedValue.dismiss() },
-                title: "Choose a product"
-            )
-            .padding(.top, 140)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Text("Choose a product")
+                    .font(AppFont.playwriteRegular(22))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { goToCart = true } label: {
+                    Image("cart")
+                        .renderingMode(.original)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 34, height: 34)
+                }
+            }
         }
+        .dynamicTypeSize(.medium)
     }
 }
 
-#Preview {
-    NavigationStack {
-        CategoriesView()
-    }
-}
+
 

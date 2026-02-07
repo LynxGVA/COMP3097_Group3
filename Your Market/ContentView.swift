@@ -11,6 +11,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             FrontPageView()
+                .dynamicTypeSize(.medium)
             //LoginView()
             //RegisterView()
             //CategoriesView()

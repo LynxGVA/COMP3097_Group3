@@ -42,10 +42,13 @@ struct CategoriesView: View {
             }
             .padding(.horizontal, 20)
         }
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Text("Choose a Category")
                     .font(AppFont.playwriteRegular(22))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
 
             ToolbarItem(placement: .topBarTrailing) {
@@ -60,6 +63,8 @@ struct CategoriesView: View {
                 }
             }
         }
+        // Keeps text sizing consistent across devices/iOS versions
+        .dynamicTypeSize(.medium)
     }
 }
 

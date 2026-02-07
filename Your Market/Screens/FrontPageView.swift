@@ -19,7 +19,6 @@ struct FrontPageView: View {
                 VStack {
                     Spacer().frame(height: 60)
 
-                    // 2) Logo / Title image
                     Image("yourmarket_logo")
                         .resizable()
                         .scaledToFit()
@@ -28,27 +27,21 @@ struct FrontPageView: View {
 
                     Spacer()
 
-                    // 3) Login button (PNG)
-                    NavigationLink {
-                        LoginView()
-                    } label: {
+                    NavigationLink { LoginView() } label: {
                         Image("login_button")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 190) // tweak as needed
+                            .frame(width: 190)
                     }
                     .buttonStyle(.plain)
 
-                    // 4) "or" + Register
                     VStack(spacing: 6) {
                         Text("or")
                             .font(AppFont.playwriteRegular(18))
                             .foregroundColor(.green)
                             .opacity(0.9)
 
-                        NavigationLink {
-                            RegisterView()
-                        } label: {
+                        NavigationLink { RegisterView() } label: {
                             Text("register")
                                 .font(AppFont.playwriteRegular(20))
                                 .underline()
@@ -64,9 +57,6 @@ struct FrontPageView: View {
             }
             .navigationBarBackButtonHidden(true)
         }
+        .dynamicTypeSize(.medium)
     }
-}
-
-#Preview {
-    FrontPageView()
 }
