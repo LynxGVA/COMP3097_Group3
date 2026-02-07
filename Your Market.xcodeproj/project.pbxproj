@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9AB3C3912F36A4250008A05C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 9AB3C3902F36A4190008A05C /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9AF5C9172F33DABB00BF85CB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9AB3C3902F36A4190008A05C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		9AF5C9072F33DAB900BF85CB /* Your Market.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Your Market.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AF5C9162F33DABB00BF85CB /* Your MarketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Your MarketTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AF5C9202F33DABB00BF85CB /* Your MarketUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Your MarketUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 		9AF5C8FE2F33DAB900BF85CB = {
 			isa = PBXGroup;
 			children = (
+				9AB3C3902F36A4190008A05C /* .gitignore */,
 				9AF5C9092F33DAB900BF85CB /* Your Market */,
 				9AF5C9192F33DABB00BF85CB /* Your MarketTests */,
 				9AF5C9232F33DABB00BF85CB /* Your MarketUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AB3C3912F36A4250008A05C /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

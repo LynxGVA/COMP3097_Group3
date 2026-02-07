@@ -49,8 +49,8 @@ struct CategoriesView: View {
             }
 
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    // open cart
+                NavigationLink {
+                    CartView()
                 } label: {
                     Image("cart")
                         .renderingMode(.original)
@@ -89,4 +89,3 @@ private struct CategoryRow: View {
         CategoriesView()
     }
 }
-
