@@ -4,11 +4,10 @@
 //
 //  Created by Lhekdup Tenzin on 2026-02-06.
 //
-
 import SwiftUI
 
 struct RegisterView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Binding var path: NavigationPath
     
     @State private var fullName = ""
     @State private var email = ""
@@ -33,8 +32,6 @@ struct RegisterView: View {
                         .opacity(0.8)
                     
                     VStack(spacing: 14) {
-                        
-                        // Full Name
                         ZStack {
                             Image("fullname_input")
                                 .resizable(
@@ -45,8 +42,6 @@ struct RegisterView: View {
                                 .frame(height: 56)
                                 .offset(x: -45)
                             
-                            
-                            
                             TextField("Full Name", text: $fullName)
                                 .font(AppFont.playwriteRegular(18))
                                 .padding(.horizontal, 18)
@@ -54,7 +49,6 @@ struct RegisterView: View {
                                 .autocorrectionDisabled(true)
                         }
                         
-                        // Email
                         ZStack {
                             Image("email_input")
                                 .resizable(
@@ -74,9 +68,8 @@ struct RegisterView: View {
                                 .autocorrectionDisabled(true)
                         }
                         
-                        // Password
                         ZStack {
-                            Image("password_input") // <-- your PNG (or a password-specific one)
+                            Image("password_input")
                                 .resizable(
                                     capInsets: EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20),
                                     resizingMode: .stretch
@@ -92,9 +85,8 @@ struct RegisterView: View {
                                 .textContentType(.newPassword)
                         }
                         
-                        // Confirm Password
                         ZStack {
-                            Image("password_input") // <-- your PNG
+                            Image("password_input")
                                 .resizable(
                                     capInsets: EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20),
                                     resizingMode: .stretch
@@ -116,7 +108,6 @@ struct RegisterView: View {
                             .fill(Color.white.opacity(0.85))
                     )
                     
-                    // Register button
                     Button {
                     } label: {
                         Text("Register")
@@ -131,47 +122,42 @@ struct RegisterView: View {
                     }
                     .padding(.top, 6)
                     
-                    // Bottom link
                     HStack(spacing: 6) {
                         Text("Already have an account?")
                             .font(AppFont.playwriteRegular(14))
                             .opacity(0.8)
                         
-                        NavigationLink {
-                            LoginView()
+                        Button {
+                            path.append(Route.login)
                         } label: {
                             Text("Login")
                                 .font(AppFont.playwriteRegular(14))
                                 .underline()
                         }
+                        .buttonStyle(.plain)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, 6)
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 80)
+                .padding(.top, 20)
                 .padding(.bottom, 40)
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image("back_button")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 84, height: 84)
-                }
-            }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            TopBar(
+                onBack: { path = NavigationPath() },
+                title: ""
+            )
+            .padding(.top, 120)
         }
+        .dynamicTypeSize(.medium)
     }
 }
-        
 
 #Preview {
     NavigationStack {
-        RegisterView()
+        RegisterView(path: .constant(NavigationPath()))
     }
 }

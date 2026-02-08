@@ -4,59 +4,69 @@
 //
 //  Created by Lhekdup Tenzin on 2026-02-06.
 //
-
 import SwiftUI
 
 struct FrontPageView: View {
+    @Binding var path: NavigationPath
+
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Image("frontpage_background")
+        ZStack {
+            Image("frontpage_background")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+
+            VStack {
+                Spacer().frame(height: 60)
+
+                Image("yourmarket_logo")
                     .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
+                    .scaledToFit()
+                    .frame(width: 220)
+                    .padding(.top, 10)
 
-                VStack {
-                    Spacer().frame(height: 60)
+                Spacer()
 
-                    Image("yourmarket_logo")
+                Button {
+                    path.append(Route.login)
+                } label: {
+                    Image("login_button")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 220)
-                        .padding(.top, 10)
+                        .frame(width: 190)
+                }
+                .buttonStyle(.plain)
 
-                    Spacer()
+                VStack(spacing: 6) {
+                    Text("or")
+                        .font(AppFont.playwriteRegular(18))
+                        .foregroundColor(.green)
+                        .opacity(0.9)
 
-                    NavigationLink { LoginView() } label: {
-                        Image("login_button")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 190)
+                    Button {
+                        path.append(Route.register)
+                    } label: {
+                        Text("register")
+                            .font(AppFont.playwriteRegular(20))
+                            .underline()
+                            .foregroundColor(.green)
                     }
                     .buttonStyle(.plain)
-
-                    VStack(spacing: 6) {
-                        Text("or")
-                            .font(AppFont.playwriteRegular(18))
-                            .foregroundColor(.green)
-                            .opacity(0.9)
-
-                        NavigationLink { RegisterView() } label: {
-                            Text("register")
-                                .font(AppFont.playwriteRegular(20))
-                                .underline()
-                                .foregroundColor(.green)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(.top, 6)
-
-                    Spacer().frame(height: 80)
                 }
-                .padding(.horizontal, 20)
+                .padding(.top, 6)
+
+                Spacer().frame(height: 80)
             }
-            .navigationBarBackButtonHidden(true)
+            .padding(.horizontal, 20)
         }
+        .navigationBarBackButtonHidden(true)
         .dynamicTypeSize(.medium)
     }
 }
+
+#Preview {
+    NavigationStack {
+        FrontPageView(path: .constant(NavigationPath()))
+    }
+}
+

@@ -4,11 +4,10 @@
 //
 //  Created by Lhekdup Tenzin on 2026-02-06.
 //
-
 import SwiftUI
 
 struct LoginView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Binding var path: NavigationPath
 
     @State private var email = ""
     @State private var password = ""
@@ -31,8 +30,6 @@ struct LoginView: View {
                         .opacity(0.8)
 
                     VStack(spacing: 14) {
-
-                        // Email
                         ZStack {
                             Image("email_input")
                                 .resizable(
@@ -52,7 +49,6 @@ struct LoginView: View {
                                 .autocorrectionDisabled(true)
                         }
 
-                        // Password
                         ZStack {
                             Image("password_input")
                                 .resizable(
@@ -70,11 +66,9 @@ struct LoginView: View {
                                 .textContentType(.password)
                         }
 
-                        // Forgot password
                         HStack {
                             Spacer()
                             Button {
-                                // logic here
                             } label: {
                                 Text("Forgot Password?")
                                     .font(AppFont.playwriteRegular(14))
@@ -90,7 +84,6 @@ struct LoginView: View {
                             .fill(Color.white.opacity(0.85))
                     )
 
-                    // Login button
                     Button {
                     } label: {
                         Text("Login")
@@ -104,64 +97,60 @@ struct LoginView: View {
                             .foregroundColor(.white)
                     }
                     .padding(.top, 6)
-                    
-                    // Categories button for sneak peak
+
                     NavigationLink {
                         CategoriesView()
-                        } label: {
-                            Text("Sneak Peek at our Categories")
-                                .font(AppFont.playwriteRegular(20))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 14)
-                                        .fill(Color.green)
-                                )
-                                .foregroundColor(.white)
-                        }
-                        .padding(.top, 8)
+                    } label: {
+                        Text("Sneak Peek at our Categories")
+                            .font(AppFont.playwriteRegular(20))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(Color.green)
+                            )
+                            .foregroundColor(.white)
+                    }
+                    .padding(.top, 8)
 
-                    // Bottom link
                     HStack(spacing: 6) {
                         Text("Don’t have an account?")
                             .font(AppFont.playwriteRegular(14))
                             .opacity(0.8)
 
-                        NavigationLink {
-                            RegisterView()
+                        Button {
+                            path.append(Route.register)
                         } label: {
                             Text("Register")
                                 .font(AppFont.playwriteRegular(14))
                                 .underline()
                         }
+                        .buttonStyle(.plain)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, 6)
 
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 80)
+                .padding(.top, 20)
                 .padding(.bottom, 40)
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image("back_button")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 84, height: 84)
-                }
-            }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            TopBar(
+                onBack: { path = NavigationPath() },
+                title: ""
+            )
+            .padding(.top, 120)
         }
+        .dynamicTypeSize(.medium)
     }
 }
 
 #Preview {
     NavigationStack {
-        LoginView()
+        LoginView(path: .constant(NavigationPath()))
     }
 }
+

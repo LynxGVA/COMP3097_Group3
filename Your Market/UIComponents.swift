@@ -30,41 +30,48 @@ struct TopBar: View {
     }
 
     var body: some View {
-        ZStack {
-            HStack {
-                Button(action: onBack) {
-                    Image("back_button")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 105, height: 30)
-                }
-                .buttonStyle(.plain)
+        GeometryReader { geo in
+            let sidePadding: CGFloat = max(10, geo.size.width * 0.04)
 
-                Spacer()
-
-                if let onCart {
-                    Button(action: onCart) {
-                        Image("cart")
+            ZStack {
+                HStack {
+                    Button(action: onBack) {
+                        Image("back_button")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 34, height: 34)
+                            .frame(width: 105, height: 30)
                     }
                     .buttonStyle(.plain)
+                    .offset(x: -20)
+
+                    Spacer()
+
+                    if let onCart {
+                        Button(action: onCart) {
+                            Image("cart")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 34, height: 34)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, sidePadding)
+
+                if !title.isEmpty {
+                    StrokeText(
+                        text: title,
+                        font: AppFont.playwriteRegular(32),
+                        fill: .white,
+                        stroke: Color(hex: "058F9E"),
+                        lineWidth: 1
+                    )
+                    .padding(.horizontal, 16)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                 }
             }
-            .padding(.horizontal, -15)
-
-            if !title.isEmpty {
-                StrokeText(
-                    text: title,
-                    font: AppFont.playwriteRegular(32),
-                    fill: .white,
-                    stroke: Color(hex: "058F9E"),
-                    lineWidth: 1
-                )
-                .padding(.leading, 10)
-                .padding(.trailing, 16)
-            }
+            .frame(width: geo.size.width, height: 72)
         }
         .frame(height: 72)
     }
@@ -83,7 +90,7 @@ struct ProductRow: View {
                 stroke: Color(hex: product.titleStrokeHex),
                 lineWidth: 1
             )
-            .padding(.leading, -10)
+            .offset(x: -10)
             .padding(.bottom, -25)
             .zIndex(1)
 
@@ -97,44 +104,54 @@ struct ProductCardView: View {
     let onCartTap: () -> Void
 
     var body: some View {
-        HStack(spacing: 14) {
-            Image(product.image)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 68, height: 58)
-                .padding(.leading, 10)
+        GeometryReader { geo in
+            let cardH: CGFloat = 108
+            let imageW: CGFloat = 68
+            let imageH: CGFloat = 58
+            let actionW: CGFloat = min(138, geo.size.width * 0.36)
 
-            HStack(spacing: 0) {
-                StrokeText(
-                    text: product.price.replacingOccurrences(of: "$", with: ""),
-                    font: AppFont.dancingBold(32),
-                    fill: .white,
-                    stroke: Color(hex: "058F9E"),
-                    lineWidth: 1
-                )
+            HStack(spacing: 14) {
+                Image(product.image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: imageW, height: imageH)
+                    .padding(.leading, 10)
 
-                StrokeText(
-                    text: "$",
-                    font: AppFont.dancingBold(32),
-                    fill: .white,
-                    stroke: Color(hex: "058F9E"),
-                    lineWidth: 1
-                )
+                HStack(spacing: 0) {
+                    StrokeText(
+                        text: product.price.replacingOccurrences(of: "$", with: ""),
+                        font: AppFont.dancingBold(32),
+                        fill: .white,
+                        stroke: Color(hex: "058F9E"),
+                        lineWidth: 1
+                    )
+
+                    StrokeText(
+                        text: "$",
+                        font: AppFont.dancingBold(32),
+                        fill: .white,
+                        stroke: Color(hex: "058F9E"),
+                        lineWidth: 1
+                    )
+                }
+                .fixedSize(horizontal: true, vertical: false)
+                .offset(x: 15, y: 30)
+
+                Spacer(minLength: 8)
+
+                ActionBox(onCartTap: onCartTap)
+                    .frame(width: actionW, height: 66)
+                    .padding(.trailing, 12)
             }
-            .fixedSize(horizontal: true, vertical: false)
-            .offset(x: 15, y: 30)
-
-            Spacer(minLength: 8)
-
-            ActionBox(onCartTap: onCartTap)
-                .padding(.trailing, 12)
+            .frame(height: cardH)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 19)
+                    .fill(Color.white)
+                    .shadow(color: Color.black.opacity(0.25), radius: 4, x: 10, y: 10)
+            )
         }
         .frame(height: 108)
-        .background(
-            RoundedRectangle(cornerRadius: 19)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.25), radius: 4, x: 10, y: 10)
-        )
     }
 }
 
@@ -144,7 +161,6 @@ struct ActionBox: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 19)
             .strokeBorder(Color.orange, lineWidth: 2)
-            .frame(width: 138, height: 66)
             .overlay {
                 ZStack {
                     Button(action: onCartTap) {

@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct MedicationProductsView: View {
+    @Environment(\.presentationMode) private var presentationMode
     @State private var goToCart = false
 
     private let products: [Product] = [
@@ -22,14 +23,13 @@ struct MedicationProductsView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            VStack(spacing: 16) {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 14) {
                     ForEach(products) { product in
                         ProductRow(product: product, onCartTap: { goToCart = true })
                     }
                 }
                 .padding()
-                .padding(.top, 8)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.white.opacity(0.85))
@@ -37,30 +37,28 @@ struct MedicationProductsView: View {
             }
             .padding(.horizontal, 20)
 
-            NavigationLink(destination: CartView(), isActive: $goToCart) { EmptyView() }
+            NavigationLink("", destination: CartView(), isActive: $goToCart)
                 .hidden()
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Text("Choose a product")
-                    .font(AppFont.playwriteRegular(22))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { goToCart = true } label: {
-                    Image("cart")
-                        .renderingMode(.original)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 34, height: 34)
-                }
-            }
+        .navigationBarBackButtonHidden(true)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            TopBar(
+                onBack: { presentationMode.wrappedValue.dismiss() },
+                title: "Choose a product",
+                onCart: { goToCart = true }
+            )
+            .padding(.top, 140)
         }
         .dynamicTypeSize(.medium)
     }
 }
+
+#Preview {
+    NavigationStack {
+        MedicationProductsView()
+    }
+}
+
 
 
 
