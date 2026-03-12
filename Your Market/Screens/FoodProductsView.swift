@@ -13,7 +13,14 @@ struct FoodProductsView: View {
     private let products: [Product] = [
         Product(name: "Bread", image: "bread", price: "5.99$", titleStrokeHex: "4EBD6A"),
         Product(name: "Cheese", image: "cheese", price: "8.99$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Mayonnaise", image: "mayonnaise", price: "6.99$", titleStrokeHex: "4EBD6A")
+        Product(name: "Mayonnaise", image: "mayonnaise", price: "6.99$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Milk", image: "milk", price: "4.49$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Eggs", image: "eggs", price: "5.49$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Apple", image: "apple", price: "2.99$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Banana", image: "banana", price: "2.49$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Tomato", image: "tomato", price: "3.49$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Rice", image: "rice", price: "4.99$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Pasta", image: "pasta", price: "3.99$", titleStrokeHex: "4EBD6A")
     ]
 
     var body: some View {
@@ -26,7 +33,11 @@ struct FoodProductsView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 14) {
                     ForEach(products) { product in
-                        ProductRow(product: product, onCartTap: { goToCart = true })
+                        ProductRow(product: product, onCartTap: {
+                        goToCart = true
+                        })
+                        .transition(.move(edge: .bottom))
+                        .animation(.easeInOut(duration: 0.3), value: products)
                     }
                 }
                 .padding()

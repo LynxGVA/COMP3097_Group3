@@ -63,7 +63,6 @@ struct CategoriesView: View {
                 }
             }
         }
-        // Keeps text sizing consistent across devices/iOS versions
         .dynamicTypeSize(.medium)
     }
 }
