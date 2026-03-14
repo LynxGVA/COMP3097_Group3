@@ -8,10 +8,12 @@ import SwiftUI
 
 struct LoginView: View {
     @Binding var path: NavigationPath
+    @EnvironmentObject var authManager: AuthManager
 
     @State private var email = ""
     @State private var password = ""
-
+    @State private var errorMessage = ""
+    
     var body: some View {
         ZStack {
             Image("Background")
@@ -85,6 +87,10 @@ struct LoginView: View {
                     )
 
                     Button {
+                        let success = authManager.login(email: email, pass: password)
+                        if !success {
+                            errorMessage = "Invalid email or password."
+                        }
                     } label: {
                         Text("Login")
                             .font(AppFont.playwriteRegular(20))
@@ -97,6 +103,12 @@ struct LoginView: View {
                             .foregroundColor(.white)
                     }
                     .padding(.top, 6)
+                    if !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                                .padding(.top, 4)
+                        }
 
                     NavigationLink {
                         CategoriesView()

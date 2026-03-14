@@ -7,6 +7,9 @@
 import SwiftUI
 
 struct CategoriesView: View {
+    
+    @EnvironmentObject var authManager: AuthManager
+    
     var body: some View {
         ZStack {
             Image("Background")
@@ -45,7 +48,16 @@ struct CategoriesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Text("Choose a Category")
+                Button {
+                    authManager.logout()
+                } label: {
+                    Text("Log Out")
+                        .font(AppFont.playwriteRegular(16))
+                        .foregroundColor(.red)
+                }
+            }
+            ToolbarItem(placement: .principal) {
+                Text("Categories")
                     .font(AppFont.playwriteRegular(22))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
