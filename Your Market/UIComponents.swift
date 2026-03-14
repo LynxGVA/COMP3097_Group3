@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct Product: Identifiable {
+struct Product: Identifiable, Equatable {
     let id = UUID()
     let name: String
     let image: String
