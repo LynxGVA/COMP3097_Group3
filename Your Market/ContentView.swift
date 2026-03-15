@@ -10,37 +10,35 @@ import SwiftUI
 enum Route: Hashable {
     case login
     case register
-    case categories
-    case cart
-    case cleaningProducts
 }
 
 struct ContentView: View {
-    @State private var path = NavigationPath()
 
+    @StateObject private var authManager = AuthManager()
+    @State private var path = NavigationPath()
+    
     var body: some View {
-        NavigationStack(path: $path) {
-            FrontPageView(path: $path)
-                .navigationDestination(for: Route.self) { route in
-                    switch route {
-                    case .login:
-                        LoginView(path: $path)
-                    case .register:
-                        RegisterView(path: $path)
-                    case .categories:
-                        CategoriesView()
-                    case .cart:
-                        CartView()
-                    case .cleaningProducts:
-                        CleaningProductsView()
-                    }
+        Group {
+            if authManager.isAuthenticated {
+                // The Main App Flow
+                NavigationStack {
+                    CategoriesView()
                 }
-                .dynamicTypeSize(.medium)
+            } else {
+                // The Authentication Flow
+                NavigationStack(path: $path) {
+                    FrontPageView(path: $path)
+                        .navigationDestination(for: Route.self) { route in
+                            switch route {
+                            case .login:
+                                LoginView(path: $path)
+                            case .register:
+                                RegisterView(path: $path)
+                            }
+                        }
+                }
+            }
         }
+        .environmentObject(authManager)
     }
 }
-
-#Preview {
-    ContentView()
-}
-

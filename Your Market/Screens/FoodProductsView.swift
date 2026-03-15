@@ -34,10 +34,10 @@ struct FoodProductsView: View {
                 VStack(spacing: 14) {
                     ForEach(products) { product in
                         ProductRow(product: product, onCartTap: {
-                        goToCart = true
+                            goToCart = true
                         })
                         .transition(.move(edge: .bottom))
-                        .animation(.easeInOut(duration: 0.3), value: products)
+                        .animation(.easeInOut(duration: 0.3), value: products.count)
                     }
                 }
                 .padding()
@@ -47,7 +47,7 @@ struct FoodProductsView: View {
                 )
             }
             .padding(.horizontal, 20)
-
+            .padding(.bottom, 200)
 
             NavigationLink("", destination: CartView(), isActive: $goToCart)
                 .hidden()

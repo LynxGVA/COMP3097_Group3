@@ -9,7 +9,7 @@ import SwiftUI
 struct CleaningProductsView: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var goToCart = false
-
+    
     private let products: [Product] = [
         Product(name: "Sponge", image: "sponge", price: "2.49$", titleStrokeHex: "4EBD6A"),
         Product(name: "Detergent", image: "detergent", price: "6.99$", titleStrokeHex: "4EBD6A"),
@@ -22,48 +22,46 @@ struct CleaningProductsView: View {
         Product(name: "Glass Cleaner", image: "glass_cleaner", price: "4.99$", titleStrokeHex: "4EBD6A"),
         Product(name: "Trash Bags", image: "trash_bags", price: "5.99$", titleStrokeHex: "4EBD6A")
     ]
-
+    
     var body: some View {
         ZStack {
             Image("Background")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-
+            
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 14) {
                     ForEach(products) { product in
                         ProductRow(product: product, onCartTap: {
-                        goToCart = true
+                            goToCart = true
                         })
                         .transition(.move(edge: .bottom))
-                        .animation(.easeInOut(duration: 0.3), value: products)
-                    }
+                        .animation(.easeInOut(duration: 0.3), value: products.count)                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.white.opacity(0.85))
+                    )
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.white.opacity(0.85))
-                )
+                .padding(.horizontal, 20)
+                .padding(.bottom, 200)
+                NavigationLink("", destination: CartView(), isActive: $goToCart)
+                    .hidden()
             }
-            .padding(.horizontal, 20)
-
-            NavigationLink("", destination: CartView(), isActive: $goToCart)
-                .hidden()
+            .navigationBarBackButtonHidden(true)
+            .safeAreaInset(edge: .top, spacing: 0) {
+                TopBar(
+                    onBack: { presentationMode.wrappedValue.dismiss() },
+                    title: "Choose a product",
+                    onCart: { goToCart = true }
+                )
+                .padding(.top, 140)
+            }
+            .dynamicTypeSize(.medium)
         }
-        .navigationBarBackButtonHidden(true)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            TopBar(
-                onBack: { presentationMode.wrappedValue.dismiss() },
-                title: "Choose a product",
-                onCart: { goToCart = true }
-            )
-            .padding(.top, 140)
-        }
-        .dynamicTypeSize(.medium)
     }
 }
-
 #Preview {
     NavigationStack {
         CleaningProductsView()

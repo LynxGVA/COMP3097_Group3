@@ -8,11 +8,13 @@ import SwiftUI
 
 struct RegisterView: View {
     @Binding var path: NavigationPath
+    @EnvironmentObject var authManager: AuthManager
     
     @State private var fullName = ""
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    @State private var errorMessage = ""
     
     var body: some View {
         ZStack {
@@ -109,6 +111,19 @@ struct RegisterView: View {
                     )
                     
                     Button {
+                        guard password == confirmPassword else {
+                                    errorMessage = "Passwords do not match."
+                                    return
+                                }
+                                guard password.count >= 6 else {
+                                    errorMessage = "Password must be at least 6 characters."
+                                    return
+                                }
+                                
+                                let success = authManager.register(email: email, pass: password)
+                                if !success {
+                                    errorMessage = "An account with this email already exists."
+                                }
                     } label: {
                         Text("Register")
                             .font(AppFont.playwriteRegular(20))
@@ -121,6 +136,12 @@ struct RegisterView: View {
                             .foregroundColor(.white)
                     }
                     .padding(.top, 6)
+                    if !errorMessage.isEmpty {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .font(.caption)
+                                .padding(.top, 4)
+                        }
                     
                     HStack(spacing: 6) {
                         Text("Already have an account?")
