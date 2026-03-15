@@ -7,10 +7,12 @@
 
 import SwiftUI
 import Combine
+import FirebaseAuth
 
 class AuthManager: ObservableObject {
     // Keeps track of whether the user is logged in
     @Published var isAuthenticated = false
+    
     
    
     // I added a default user so we can test logging in right away!
