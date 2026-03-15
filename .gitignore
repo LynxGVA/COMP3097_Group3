@@ -2,3 +2,35 @@
 xcuserdata/
 *.xcuserstate
 DerivedData/
+# Xcode
+#
+# gitignore contributors: switch to the 
+# https://github.com/github/gitignore/blob/main/Swift.gitignore 
+# for a more comprehensive list.
+
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# User-specific
+# This is what's currently cluttering your 'git status'
+xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods
+# Un-comment the next line if you want to exclude your Pods directory
+# Pods/
+
+# Project-specific
+*.moved-aside
+*.xcuserstate
+**/.DS_Store
