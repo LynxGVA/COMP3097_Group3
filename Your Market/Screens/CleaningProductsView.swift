@@ -4,6 +4,7 @@
 //
 //  Created by Viktor Grygoriev on 2026-02-04.
 //
+
 import SwiftUI
 
 struct CleaningProductsView: View {
@@ -32,38 +33,44 @@ struct CleaningProductsView: View {
             
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 14) {
+                    
                     ForEach(products) { product in
                         ProductRow(product: product, onCartTap: {
                             goToCart = true
                         })
                         .transition(.move(edge: .bottom))
-                        .animation(.easeInOut(duration: 0.3), value: products.count)                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.white.opacity(0.85))
-                    )
+                        .animation(.easeInOut(duration: 0.3), value: products.count)
+                    }
+                    
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 200)
-                NavigationLink("", destination: CartView(), isActive: $goToCart)
-                    .hidden()
-            }
-            .navigationBarBackButtonHidden(true)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                TopBar(
-                    onBack: { presentationMode.wrappedValue.dismiss() },
-                    title: "Choose a product",
-                    onCart: { goToCart = true }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white.opacity(0.85))
                 )
-                .padding(.top, 140)
             }
-            .dynamicTypeSize(.medium)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 200)
+            
+            NavigationLink("", destination: CartView(), isActive: $goToCart)
+                .hidden()
         }
+        .navigationBarBackButtonHidden(true)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            TopBar(
+                onBack: { presentationMode.wrappedValue.dismiss() },
+                title: "Choose a product",
+                onCart: { goToCart = true }
+            )
+            .padding(.top, 140)
+        }
+        .dynamicTypeSize(.medium)
     }
 }
+
 #Preview {
     NavigationStack {
         CleaningProductsView()
     }
 }
+
