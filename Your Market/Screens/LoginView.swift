@@ -71,6 +71,14 @@ struct LoginView: View {
                         HStack {
                             Spacer()
                             Button {
+                                guard !email.isEmpty else {
+                                    errorMessage = "Enter your email first."
+                                    return
+                                }
+                                Task {
+                                    let err = await authManager.sendPasswordReset(email: email)
+                                    errorMessage = err ?? "Reset email sent – check your inbox."
+                                }
                             } label: {
                                 Text("Forgot Password?")
                                     .font(AppFont.playwriteRegular(14))
@@ -87,28 +95,36 @@ struct LoginView: View {
                     )
 
                     Button {
-                        let success = authManager.login(email: email, pass: password)
-                        if !success {
-                            errorMessage = "Invalid email or password."
+                        Task {
+                            let err = await authManager.login(email: email, password: password)
+                            if let err { errorMessage = err }
                         }
                     } label: {
-                        Text("Login")
-                            .font(AppFont.playwriteRegular(20))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 14)
-                                    .fill(Color.black.opacity(0.85))
-                            )
-                            .foregroundColor(.white)
-                    }
-                    .padding(.top, 6)
-                    if !errorMessage.isEmpty {
-                            Text(errorMessage)
-                                .foregroundColor(.red)
-                                .font(.caption)
-                                .padding(.top, 4)
+                        if authManager.isLoading {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                        } else {
+                            Text("Login")
+                                .font(AppFont.playwriteRegular(20))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .fill(Color.black.opacity(0.85))
+                                )
+                                .foregroundColor(.white)
                         }
+                    }
+                    .disabled(authManager.isLoading)
+                    .padding(.top, 6)
+
+                    if !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .foregroundColor(errorMessage.contains("sent") ? .green : .red)
+                            .font(.caption)
+                            .padding(.top, 4)
+                    }
 
                     NavigationLink {
                         CategoriesView()
@@ -126,7 +142,7 @@ struct LoginView: View {
                     .padding(.top, 8)
 
                     HStack(spacing: 6) {
-                        Text("Don’t have an account?")
+                        Text("Don't have an account?")
                             .font(AppFont.playwriteRegular(14))
                             .opacity(0.8)
 
@@ -141,7 +157,6 @@ struct LoginView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, 6)
-
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
@@ -163,6 +178,6 @@ struct LoginView: View {
 #Preview {
     NavigationStack {
         LoginView(path: .constant(NavigationPath()))
+            .environmentObject(AuthManager())
     }
 }
-

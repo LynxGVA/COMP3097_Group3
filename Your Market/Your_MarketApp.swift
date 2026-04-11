@@ -2,23 +2,30 @@
 //  Your_MarketApp.swift
 //  Your Market
 //
-//  Created by Viktor Grygoriev on 2026-02-04.
-//
+
 import SwiftUI
 import FirebaseCore
 
 @main
 struct Your_MarketApp: App {
-    
-    init(){
+
+    @StateObject private var authManager = AuthManager()
+    @StateObject private var cartService = CartService()
+
+    init() {
         FirebaseApp.configure()
     }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(authManager)
+                .environmentObject(cartService)
+                .onAppear {
+                    // Give AuthManager a reference to CartService
+                    // so it can start/stop the Firestore listener on login/logout
+                    authManager.cartService = cartService
+                }
         }
     }
 }
-
-
-

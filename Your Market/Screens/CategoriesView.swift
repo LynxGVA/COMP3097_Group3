@@ -2,14 +2,14 @@
 //  CategoriesView.swift
 //  Your Market
 //
-//  Created by Viktor Grygoriev on 2026-02-04.
-//
+
 import SwiftUI
 
 struct CategoriesView: View {
-    
+
     @EnvironmentObject var authManager: AuthManager
-    
+    @EnvironmentObject var cartService: CartService
+
     var body: some View {
         ZStack {
             Image("Background")
@@ -56,6 +56,7 @@ struct CategoriesView: View {
                         .foregroundColor(.red)
                 }
             }
+
             ToolbarItem(placement: .principal) {
                 Text("Categories")
                     .font(AppFont.playwriteRegular(22))
@@ -67,11 +68,24 @@ struct CategoriesView: View {
                 NavigationLink {
                     CartView()
                 } label: {
-                    Image("cart")
-                        .renderingMode(.original)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 34, height: 34)
+                    ZStack(alignment: .topTrailing) {
+                        Image("cart")
+                            .renderingMode(.original)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 34, height: 34)
+
+                        // Badge showing number of items in cart
+                        if cartService.totalItems > 0 {
+                            Text("\(cartService.totalItems)")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(4)
+                                .background(Color.red)
+                                .clipShape(Circle())
+                                .offset(x: 6, y: -6)
+                        }
+                    }
                 }
             }
         }
@@ -103,5 +117,7 @@ private struct CategoryRow: View {
 #Preview {
     NavigationStack {
         CategoriesView()
+            .environmentObject(AuthManager())
+            .environmentObject(CartService())
     }
 }

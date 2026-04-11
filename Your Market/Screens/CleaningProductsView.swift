@@ -2,68 +2,63 @@
 //  CleaningProductsView.swift
 //  Your Market
 //
-//  Created by Viktor Grygoriev on 2026-02-04.
-//
-import SwiftUI
+ import SwiftUI
+import Combine
 
 struct CleaningProductsView: View {
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject var cartService: CartService
     @State private var goToCart = false
-    
+ 
     private let products: [Product] = [
-        Product(name: "Sponge", image: "sponge", price: "2.49$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Detergent", image: "detergent", price: "6.99$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Soap", image: "soap", price: "3.49$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Broom", image: "broom", price: "10.99$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Mop", image: "mop", price: "12.49$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Cleaner", image: "cleaner", price: "5.99$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Cloth", image: "cloth", price: "3.49$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Gloves", image: "gloves", price: "4.49$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Glass Cleaner", image: "glass_cleaner", price: "4.99$", titleStrokeHex: "4EBD6A"),
-        Product(name: "Trash Bags", image: "trash_bags", price: "5.99$", titleStrokeHex: "4EBD6A")
+        Product(name: "Sponge",        image: "sponge",        price: "2.49$",  titleStrokeHex: "4EBD6A"),
+        Product(name: "Detergent",     image: "detergent",     price: "6.99$",  titleStrokeHex: "4EBD6A"),
+        Product(name: "Soap",          image: "soap",          price: "3.49$",  titleStrokeHex: "4EBD6A"),
+        Product(name: "Broom",         image: "broom",         price: "10.99$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Mop",           image: "mop",           price: "12.49$", titleStrokeHex: "4EBD6A"),
+        Product(name: "Cleaner",       image: "cleaner",       price: "5.99$",  titleStrokeHex: "4EBD6A"),
+        Product(name: "Cloth",         image: "cloth",         price: "3.49$",  titleStrokeHex: "4EBD6A"),
+        Product(name: "Gloves",        image: "gloves",        price: "4.49$",  titleStrokeHex: "4EBD6A"),
+        Product(name: "Glass Cleaner", image: "glass_cleaner", price: "4.99$",  titleStrokeHex: "4EBD6A"),
+        Product(name: "Trash Bags",    image: "trash_bags",    price: "5.99$",  titleStrokeHex: "4EBD6A")
     ]
-    
+ 
     var body: some View {
         ZStack {
             Image("Background")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-            
+ 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 14) {
                     ForEach(products) { product in
                         ProductRow(product: product, onCartTap: {
+                            Task { await cartService.addItem(product: product) }
                             goToCart = true
                         })
-                        .transition(.move(edge: .bottom))
-                        .animation(.easeInOut(duration: 0.3), value: products.count)                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.white.opacity(0.85))
-                    )
+                    }
                 }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 200)
-                NavigationLink("", destination: CartView(), isActive: $goToCart)
-                    .hidden()
-            }
-            .navigationBarBackButtonHidden(true)
-            .safeAreaInset(edge: .top, spacing: 0) {
-                TopBar(
-                    onBack: { presentationMode.wrappedValue.dismiss() },
-                    title: "Choose a product",
-                    onCart: { goToCart = true }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white.opacity(0.85))
                 )
-                .padding(.top, 140)
             }
-            .dynamicTypeSize(.medium)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 200)
+ 
+            NavigationLink("", destination: CartView(), isActive: $goToCart).hidden()
         }
-    }
-}
-#Preview {
-    NavigationStack {
-        CleaningProductsView()
+        .navigationBarBackButtonHidden(true)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            TopBar(
+                onBack: { presentationMode.wrappedValue.dismiss() },
+                title: "Choose a product",
+                onCart: { goToCart = true }
+            )
+            .padding(.top, 140)
+        }
+        .dynamicTypeSize(.medium)
     }
 }
