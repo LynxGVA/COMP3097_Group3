@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  RegisterView.swift
 //  Your Market
 //
 //  Created by Lhekdup Tenzin on 2026-02-06.
@@ -111,37 +111,53 @@ struct RegisterView: View {
                     )
                     
                     Button {
-                        guard password == confirmPassword else {
-                                    errorMessage = "Passwords do not match."
-                                    return
-                                }
-                                guard password.count >= 6 else {
-                                    errorMessage = "Password must be at least 6 characters."
-                                    return
-                                }
-                                
-                                let success = authManager.register(email: email, pass: password)
-                                if !success {
-                                    errorMessage = "An account with this email already exists."
-                                }
-                    } label: {
-                        Text("Register")
-                            .font(AppFont.playwriteRegular(20))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 14)
-                                    .fill(Color.black.opacity(0.85))
-                            )
-                            .foregroundColor(.white)
-                    }
-                    .padding(.top, 6)
-                    if !errorMessage.isEmpty {
-                            Text(errorMessage)
-                                .foregroundColor(.red)
-                                .font(.caption)
-                                .padding(.top, 4)
+                        guard !fullName.trimmingCharacters(in: .whitespaces).isEmpty else {
+                            errorMessage = "Please enter your full name."
+                            return
                         }
+                        guard password == confirmPassword else {
+                            errorMessage = "Passwords do not match."
+                            return
+                        }
+                        guard password.count >= 6 else {
+                            errorMessage = "Password must be at least 6 characters."
+                            return
+                        }
+
+                        Task {
+                            let err = await authManager.register(
+                                email: email,
+                                password: password,
+                                fullName: fullName
+                            )
+                            if let err { errorMessage = err }
+                        }
+                    } label: {
+                        if authManager.isLoading {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                        } else {
+                            Text("Register")
+                                .font(AppFont.playwriteRegular(20))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .fill(Color.black.opacity(0.85))
+                                )
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .disabled(authManager.isLoading)
+                    .padding(.top, 6)
+
+                    if !errorMessage.isEmpty {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .padding(.top, 4)
+                    }
                     
                     HStack(spacing: 6) {
                         Text("Already have an account?")
@@ -180,5 +196,6 @@ struct RegisterView: View {
 #Preview {
     NavigationStack {
         RegisterView(path: .constant(NavigationPath()))
+            .environmentObject(AuthManager())
     }
 }
