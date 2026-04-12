@@ -12,6 +12,11 @@ struct CartView: View {
     @State private var showOrderAlert = false
     @State private var orderPlaced    = false
 
+    private let taxRate = 0.13
+
+    var tax: Double        { cartService.totalPrice * taxRate }
+    var grandTotal: Double { cartService.totalPrice + tax }
+
     var body: some View {
         ZStack {
             Image("Background")
@@ -20,7 +25,6 @@ struct CartView: View {
                 .ignoresSafeArea()
 
             if cartService.isEmpty {
-                // Empty state
                 VStack(spacing: 16) {
                     StrokeText(
                         text: "Your cart is empty",
@@ -36,9 +40,10 @@ struct CartView: View {
                 }
 
             } else {
-                VStack(spacing: 0) {
-                    // Items list
-                    ScrollView(showsIndicators: false) {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 16) {
+
+                        // Items list
                         VStack(spacing: 12) {
                             ForEach(cartService.items) { item in
                                 CartItemRow(item: item)
@@ -49,39 +54,65 @@ struct CartView: View {
                             RoundedRectangle(cornerRadius: 16)
                                 .fill(Color.white.opacity(0.9))
                         )
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 12)
-                    }
 
-                    // Total + Place Order
-                    VStack(spacing: 10) {
-                        HStack {
-                            Text("Total:")
-                                .font(AppFont.playwriteRegular(18))
-                            Spacer()
-                            Text(String(format: "$%.2f", cartService.totalPrice))
-                                .font(AppFont.dancingBold(28))
-                                .foregroundColor(Color(hex: "4EBD6A"))
-                        }
-                        .padding(.horizontal, 28)
+                        // Summary box
+                        VStack(spacing: 10) {
+                            Divider()
 
-                        Button {
-                            showOrderAlert = true
-                        } label: {
-                            Text("Place Order")
-                                .font(AppFont.playwriteRegular(20))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 14)
-                                        .fill(Color(hex: "4EBD6A"))
-                                )
-                                .foregroundColor(.white)
+                            HStack {
+                                Text("Subtotal")
+                                    .font(AppFont.playwriteRegular(15))
+                                    .foregroundColor(.gray)
+                                Spacer()
+                                Text(String(format: "$%.2f", cartService.totalPrice))
+                                    .font(AppFont.playwriteRegular(15))
+                                    .foregroundColor(.gray)
+                            }
+
+                            HStack {
+                                Text("Tax (13% HST)")
+                                    .font(AppFont.playwriteRegular(15))
+                                    .foregroundColor(.gray)
+                                Spacer()
+                                Text(String(format: "$%.2f", tax))
+                                    .font(AppFont.playwriteRegular(15))
+                                    .foregroundColor(.gray)
+                            }
+
+                            Divider()
+
+                            HStack {
+                                Text("Total")
+                                    .font(AppFont.playwriteRegular(18))
+                                Spacer()
+                                Text(String(format: "$%.2f", grandTotal))
+                                    .font(AppFont.dancingBold(32))
+                                    .foregroundColor(Color(hex: "4EBD6A"))
+                            }
+
+                            Button {
+                                showOrderAlert = true
+                            } label: {
+                                Text("Place Order")
+                                    .font(AppFont.playwriteRegular(20))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 14)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .fill(Color(hex: "4EBD6A"))
+                                    )
+                                    .foregroundColor(.white)
+                            }
+                            .padding(.top, 4)
                         }
-                        .padding(.horizontal, 20)
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.white.opacity(0.9))
+                        )
                     }
-                    .padding(.vertical, 16)
-                    .background(Color.white.opacity(0.85))
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 40)
                 }
             }
         }
@@ -103,7 +134,8 @@ struct CartView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text(String(format: "Total: $%.2f\nAre you sure you want to place this order?", cartService.totalPrice))
+            Text(String(format: "Subtotal: $%.2f\nTax (13%%): $%.2f\nTotal: $%.2f\n\nAre you sure you want to place this order?",
+                        cartService.totalPrice, tax, grandTotal))
         }
         .alert("Order Placed! 🎉", isPresented: $orderPlaced) {
             Button("OK") { presentationMode.wrappedValue.dismiss() }
@@ -138,7 +170,6 @@ private struct CartItemRow: View {
 
             Spacer()
 
-            // Quantity stepper
             HStack(spacing: 8) {
                 Button {
                     Task { await cartService.updateQuantity(item, newQuantity: item.quantity - 1) }
