@@ -10,6 +10,9 @@ struct CategoriesView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var cartService: CartService
 
+    private let taxRate = 0.13
+    var grandTotal: Double { cartService.totalPrice * (1 + taxRate) }
+
     var body: some View {
         ZStack {
             Image("Background")
@@ -68,22 +71,32 @@ struct CategoriesView: View {
                 NavigationLink {
                     CartView()
                 } label: {
-                    ZStack(alignment: .topTrailing) {
-                        Image("cart")
-                            .renderingMode(.original)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 34, height: 34)
+                    HStack(spacing: 6) {
+                        ZStack(alignment: .topTrailing) {
+                            Image("cart")
+                                .renderingMode(.original)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 34, height: 34)
 
-                        // Badge showing number of items in cart
+                            // Item count badge
+                            if cartService.totalItems > 0 {
+                                Text("\(cartService.totalItems)")
+                                    .font(.system(size: 11, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .padding(4)
+                                    .background(Color.red)
+                                    .clipShape(Circle())
+                                    .offset(x: 6, y: -6)
+                            }
+                        }
+
+                        // Grand total (only shown when cart has items)
                         if cartService.totalItems > 0 {
-                            Text("\(cartService.totalItems)")
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(4)
-                                .background(Color.red)
-                                .clipShape(Circle())
-                                .offset(x: 6, y: -6)
+                            Text(String(format: "$%.2f", grandTotal))
+                                .font(AppFont.playwriteRegular(13))
+                                .foregroundColor(Color(hex: "4EBD6A"))
+                                .fontWeight(.bold)
                         }
                     }
                 }
